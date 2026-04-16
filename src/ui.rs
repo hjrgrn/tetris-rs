@@ -6,29 +6,29 @@ use crossterm::{
 };
 
 pub struct Container {
-    col: u16,
     row: u16,
+    col: u16,
     start_y: u16,
     start_x: u16,
 }
 
 impl Container {
-    pub fn new(col: u16, row: u16, start_y: u16, start_x: u16) -> Self {
+    pub fn new(row: u16, col: u16, start_y: u16, start_x: u16) -> Self {
         Self {
-            col,
             row,
+            col,
             start_y,
             start_x,
         }
     }
     // TODO: consider start and end
     pub fn draw(&mut self, stdout: &mut Stdout) -> io::Result<()> {
-        for y in self.start_y..self.col + self.start_y {
-            for x in self.start_x..self.row + self.start_x {
+        for y in self.start_y..self.row + self.start_y {
+            for x in self.start_x..self.col + self.start_x {
                 let is_top = y == self.start_y;
-                let is_bottom = y == self.col + self.start_y - 1;
+                let is_bottom = y == self.row + self.start_y - 1;
                 let is_left = x == self.start_x;
-                let is_right = x == self.row + self.start_x - 1;
+                let is_right = x == self.col + self.start_x - 1;
                 let char = if is_top && is_left {
                     "┏"
                 } else if is_top && is_right {
