@@ -27,9 +27,8 @@ pub struct TetrisGame {
     col: u16,
     row: u16,
     board: Container,
-    // next: Container,
-    // hold: Container,
-    // score: Container,
+    next: Container,
+    hold: Container,
     stdout: Stdout,
 }
 
@@ -39,6 +38,8 @@ impl TetrisGame {
             col,
             row,
             board: Container::new(col, row, 0, 0),
+            next: Container::new(row / 4, col / 2, 0, col + 2),
+            hold: Container::new(row / 4, col / 2, (row / 4) + 2, col + 2),
             stdout: io::stdout(),
         }
     }
@@ -47,6 +48,8 @@ impl TetrisGame {
         self.stdout
             .execute(terminal::Clear(terminal::ClearType::All))?;
         self.board.draw(&mut self.stdout)?;
+        self.next.draw(&mut self.stdout)?;
+        self.hold.draw(&mut self.stdout)?;
         self.stdout.flush()
     }
 }

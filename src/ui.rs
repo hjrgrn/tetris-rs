@@ -21,7 +21,7 @@ impl Container {
             start_x,
         }
     }
-    // TODO: consider start and end
+
     pub fn draw(&mut self, stdout: &mut Stdout) -> io::Result<()> {
         for y in self.start_y..self.row + self.start_y {
             for x in self.start_x..self.col + self.start_x {
