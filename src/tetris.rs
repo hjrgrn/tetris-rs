@@ -1,33 +1,52 @@
 //! TODO: merges the logic from ui and backend (they are independent)
 
-use std::io::{self, Write};
+use std::io::{self, Stdout, Write};
 
-use crossterm::{
-    ExecutableCommand, QueueableCommand, cursor,
-    style::{self, Stylize},
-    terminal,
-};
+use crossterm::{ExecutableCommand, terminal};
 
 use crate::{
-    backend::{Move, TetrisGame, tick},
+    backend::{Move, tick},
     ui::Container,
 };
 
 pub fn game() -> io::Result<()> {
-    let tg = TetrisGame {};
+    let mut tg = TetrisGame::new(40, 150);
     let initial_move = Move {};
 
-    let mut stdout = io::stdout();
-    stdout.execute(terminal::Clear(terminal::ClearType::All))?;
-    let mut board = Container::new(40, 150, 0, 0);
-    board.draw(&mut stdout)?;
-    stdout.flush()?;
-
     loop {
+        tg.draw()?;
         if tick(&tg, &initial_move) {
             break;
         }
     }
 
     Ok(())
+}
+
+pub struct TetrisGame {
+    col: u16,
+    row: u16,
+    board: Container,
+    // next: Container,
+    // hold: Container,
+    // score: Container,
+    stdout: Stdout,
+}
+
+impl TetrisGame {
+    pub fn new(col: u16, row: u16) -> Self {
+        Self {
+            col,
+            row,
+            board: Container::new(col, row, 0, 0),
+            stdout: io::stdout(),
+        }
+    }
+
+    pub fn draw(&mut self) -> io::Result<()> {
+        self.stdout
+            .execute(terminal::Clear(terminal::ClearType::All))?;
+        self.board.draw(&mut self.stdout)?;
+        self.stdout.flush()
+    }
 }
