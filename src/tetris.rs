@@ -10,7 +10,7 @@ use crate::{
 };
 
 pub fn game() -> io::Result<()> {
-    let mut tg = TetrisGame::new(40, 150);
+    let mut tg = TetrisGame::new(20, 40);
     let initial_move = Move {};
 
     loop {
