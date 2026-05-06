@@ -6,6 +6,55 @@ use crossterm::{ExecutableCommand, terminal};
 
 use crate::ui::Container;
 
+static GRAVITY: u8 = 50;
+
+/// XXX: A tetris move.
+pub enum Move {
+    Left,
+    Right,
+    Clock,
+    Counter,
+    Drop,
+    Hold,
+    None,
+}
+
+/// A a struct that represents a
+/// [tetromino](https://en.wikipedia.org/wiki/Tetromino).
+///
+/// Specifically: its type, its orientation, and where it is.
+struct TetrisBlock {
+    ty: BlockType,
+    orientation: Orientation,
+    location: Location,
+}
+
+/// The type/shape of a tetromino, not including orientation.
+enum BlockType {
+    I,
+    O,
+    T,
+    L,
+    J,
+    S,
+    Z,
+}
+
+/// The orientation of a tetromino.
+enum Orientation {
+    Zero,
+    One,
+    Two,
+    Three,
+}
+
+/// A row,column pair, representing a location on the board. Negative numbers
+/// are allowed, since we need them for offsets.
+struct Location {
+    row: i8,
+    col: i8,
+}
+
 pub fn game() -> io::Result<()> {
     let mut tg = TetrisGame::new(40, 40);
     let initial_move = Move::None;
@@ -20,6 +69,8 @@ pub fn game() -> io::Result<()> {
     Ok(())
 }
 
+// TODO: separate ui and game fields in different structs, move those structs into different
+// modules.
 pub struct TetrisGame {
     col: u16,
     row: u16,
@@ -29,17 +80,8 @@ pub struct TetrisGame {
     stdout: Stdout,
     // XXX:
     cleared_lines: u8,
-}
-
-/// XXX: A tetris move.
-pub enum Move {
-    Left,
-    Right,
-    Clock,
-    Counter,
-    Drop,
-    Hold,
-    None,
+    /// Number of game ticks until the block will touch the ground.
+    ticks_till_ground: u8,
 }
 
 impl TetrisGame {
@@ -52,6 +94,8 @@ impl TetrisGame {
             hold: Container::new(row / 4, col / 2, (row / 4) + 2, col + 2),
             stdout: io::stdout(),
             cleared_lines: 0,
+            // TODO: different gravity levels
+            ticks_till_ground: GRAVITY,
         }
     }
 
@@ -78,7 +122,7 @@ impl TetrisGame {
     }
 
     /// TODO:
-    fn gravity_tick(&self) {}
+    fn gravity_tick(&mut self) {}
 
     /// TODO:
     fn handle_move(&self, _mv: &Move) {}
