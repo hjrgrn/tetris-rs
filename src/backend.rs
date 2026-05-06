@@ -5,4 +5,13 @@ pub fn tick(_tg: &TetrisGame, _mv: &Move) -> bool {
     true
 }
 
-pub struct Move {}
+/// XXX: A tetris move
+pub enum Move {
+    Left,
+    Right,
+    Clock,
+    Counter,
+    Drop,
+    Hold,
+    None,
+}

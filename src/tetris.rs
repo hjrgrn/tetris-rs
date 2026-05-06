@@ -11,7 +11,7 @@ use crate::{
 
 pub fn game() -> io::Result<()> {
     let mut tg = TetrisGame::new(40, 40);
-    let initial_move = Move {};
+    let initial_move = Move::None;
 
     loop {
         tg.draw()?;
