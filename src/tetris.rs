@@ -3,6 +3,10 @@
 use std::io::{self, Stdout, Write};
 
 use crossterm::{ExecutableCommand, terminal};
+use rand::{
+    Rng, RngExt,
+    distr::{Distribution, StandardUniform},
+};
 
 use crate::ui::Container;
 
@@ -29,6 +33,22 @@ struct TetrisBlock {
     location: Location,
 }
 
+impl TetrisBlock {
+    fn new(col: i8) -> Self {
+        let ty: BlockType = rand::random();
+        let orientation: Orientation = rand::random();
+        let location = Location {
+            row: 0,
+            col: col / 2 - 2,
+        };
+        Self {
+            ty,
+            orientation,
+            location,
+        }
+    }
+}
+
 /// The type/shape of a tetromino, not including orientation.
 enum BlockType {
     I,
@@ -40,12 +60,37 @@ enum BlockType {
     Z,
 }
 
+impl Distribution<BlockType> for StandardUniform {
+    fn sample<R: rand::prelude::Rng + ?Sized>(&self, rng: &mut R) -> BlockType {
+        match rng.random_range(0..7) {
+            0 => BlockType::I,
+            1 => BlockType::O,
+            2 => BlockType::T,
+            3 => BlockType::L,
+            4 => BlockType::J,
+            5 => BlockType::S,
+            _ => BlockType::Z,
+        }
+    }
+}
+
 /// The orientation of a tetromino.
 enum Orientation {
     Zero,
     One,
     Two,
     Three,
+}
+
+impl Distribution<Orientation> for StandardUniform {
+    fn sample<R: rand::prelude::Rng + ?Sized>(&self, rng: &mut R) -> Orientation {
+        match rng.random_range(0..4) {
+            0 => Orientation::Zero,
+            1 => Orientation::One,
+            2 => Orientation::Two,
+            _ => Orientation::Three,
+        }
+    }
 }
 
 /// A row,column pair, representing a location on the board. Negative numbers
