@@ -127,6 +127,12 @@ pub struct TetrisGame {
     cleared_lines: u8,
     /// Number of game ticks until the block will touch the ground.
     ticks_till_ground: u8,
+    /// Falling block.
+    falling_block: TetrisBlock,
+    /// Next block.
+    next_block: TetrisBlock,
+    /// A stored block that the player can swap out.
+    stored_block: TetrisBlock,
 }
 
 impl TetrisGame {
@@ -141,6 +147,10 @@ impl TetrisGame {
             cleared_lines: 0,
             // TODO: different gravity levels
             ticks_till_ground: GRAVITY,
+            // TODO: solve these `unwrap`s
+            falling_block: TetrisBlock::new(col.try_into().unwrap()),
+            next_block: TetrisBlock::new(col.try_into().unwrap()),
+            stored_block: TetrisBlock::new(col.try_into().unwrap()),
         }
     }
 
