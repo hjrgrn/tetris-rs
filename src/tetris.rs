@@ -4,13 +4,16 @@ use std::io::{self, Stdout, Write};
 
 use crossterm::{ExecutableCommand, terminal};
 use rand::{
-    Rng, RngExt,
+    RngExt,
     distr::{Distribution, StandardUniform},
 };
 
-use crate::ui::Container;
+use crate::{tetris::block::TetrisBlock, ui::Container};
+
+mod block;
 
 static GRAVITY: u8 = 50;
+static TETRIS: usize = 4;
 
 /// XXX: A tetris move.
 pub enum Move {
@@ -21,83 +24,6 @@ pub enum Move {
     Drop,
     Hold,
     None,
-}
-
-/// A a struct that represents a
-/// [tetromino](https://en.wikipedia.org/wiki/Tetromino).
-///
-/// Specifically: its type, its orientation, and where it is.
-struct TetrisBlock {
-    ty: BlockType,
-    orientation: Orientation,
-    location: Location,
-}
-
-impl TetrisBlock {
-    fn new(col: i8) -> Self {
-        let ty: BlockType = rand::random();
-        let orientation: Orientation = rand::random();
-        let location = Location {
-            row: 0,
-            col: col / 2 - 2,
-        };
-        Self {
-            ty,
-            orientation,
-            location,
-        }
-    }
-}
-
-/// The type/shape of a tetromino, not including orientation.
-enum BlockType {
-    I,
-    O,
-    T,
-    L,
-    J,
-    S,
-    Z,
-}
-
-impl Distribution<BlockType> for StandardUniform {
-    fn sample<R: rand::prelude::Rng + ?Sized>(&self, rng: &mut R) -> BlockType {
-        match rng.random_range(0..7) {
-            0 => BlockType::I,
-            1 => BlockType::O,
-            2 => BlockType::T,
-            3 => BlockType::L,
-            4 => BlockType::J,
-            5 => BlockType::S,
-            _ => BlockType::Z,
-        }
-    }
-}
-
-/// The orientation of a tetromino.
-enum Orientation {
-    Zero,
-    One,
-    Two,
-    Three,
-}
-
-impl Distribution<Orientation> for StandardUniform {
-    fn sample<R: rand::prelude::Rng + ?Sized>(&self, rng: &mut R) -> Orientation {
-        match rng.random_range(0..4) {
-            0 => Orientation::Zero,
-            1 => Orientation::One,
-            2 => Orientation::Two,
-            _ => Orientation::Three,
-        }
-    }
-}
-
-/// A row,column pair, representing a location on the board. Negative numbers
-/// are allowed, since we need them for offsets.
-struct Location {
-    row: i8,
-    col: i8,
 }
 
 pub fn game() -> io::Result<()> {
@@ -165,6 +91,7 @@ impl TetrisGame {
 
     pub fn tick(&mut self, mv: &Move) -> bool {
         // Handle gravity.
+        // FROMHERE:
         self.gravity_tick();
         // Handle input.
         self.handle_move(mv);
@@ -177,7 +104,12 @@ impl TetrisGame {
     }
 
     /// TODO:
-    fn gravity_tick(&mut self) {}
+    fn gravity_tick(&mut self) {
+        self.ticks_till_ground -= 1;
+        if self.ticks_till_ground <= 0 {
+            // FROMHERE:: remove
+        }
+    }
 
     /// TODO:
     fn handle_move(&self, _mv: &Move) {}
@@ -195,5 +127,12 @@ impl TetrisGame {
     /// TODO:
     fn game_over(&self) -> bool {
         true
+    }
+
+    /// Clear a block out of the board.
+    fn remove(&mut self, block: TetrisBlock) {
+        for i in 0..TETRIS {
+            // TODOFIRST:
+        }
     }
 }
