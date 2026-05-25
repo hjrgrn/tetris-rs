@@ -16,6 +16,8 @@ pub struct TetrisBlock {
     orientation: Orientation,
     // TODO: make these private, maybe use amplify
     // amplify = { version = "4", default-features = false, features = ["derive"] }
+    // IDEA: Now we have Location, that describes the location, and cells, that describe the shape
+    // of the Block, maybe we can have just cells, that describes the shape AND the location.
     pub location: Location,
     pub cells: [Location; TETRIS],
 }

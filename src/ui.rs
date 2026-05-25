@@ -5,7 +5,7 @@ use crossterm::{
     style::{self, Stylize},
 };
 
-use crate::tetris::block::TetrisBlock;
+use crate::tetris::block::{Location, TetrisBlock};
 
 pub struct Container {
     rows: u16,
@@ -74,6 +74,18 @@ impl Container {
     pub fn set(&mut self, block: &TetrisBlock, val: char) {
         // obj->board[obj->cols * row + column] = value;
         // TODO: edge cases and error handling.
-        self.board[self.cols as usize * (block.location.row + block.location.col) as usize] = val;
+        // TODO: testing.
+        for cell in block.cells.iter() {
+            let x = block.location.col + cell.col;
+            let y = block.location.row + cell.row;
+            self.board[self.cols as usize * y as usize + x as usize] = val;
+        }
+    }
+
+    /// Get the value of a cell.
+    pub fn get(&self, location: &Location) -> char {
+        // TODO: edge cases and error handling.
+        // TODO: testing.
+        self.board[self.cols as usize * location.row as usize + location.row as usize]
     }
 }

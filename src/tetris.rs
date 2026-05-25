@@ -4,7 +4,10 @@ use std::io::{self, Stdout, Write};
 
 use crossterm::{ExecutableCommand, terminal};
 
-use crate::{tetris::block::TetrisBlock, ui::Container};
+use crate::{
+    tetris::block::{Location, TetrisBlock},
+    ui::Container,
+};
 
 pub mod block;
 
@@ -104,6 +107,14 @@ impl TetrisGame {
         self.ticks_till_ground -= 1;
         if self.ticks_till_ground <= 0 {
             self.remove_falling();
+            // TODO: this may be a function/method.
+            self.falling_block.location.row += 1;
+            if self.falling_fits() {
+                // FROMHERE:
+            } else {
+                // TODO:
+            }
+            // TODO:
         }
     }
 
@@ -126,8 +137,36 @@ impl TetrisGame {
     }
 
     /// Clear a block out of the board.
+    // TODO: this and other `*falling*` methods need a structural refactoring.
     fn remove_falling(&mut self) {
         // TODO: define an enum (search `} tetris_cell;`).
         self.board.set(&self.falling_block, '0');
+    }
+
+    /// Check if a block can be placed on the board.
+    fn falling_fits(&self) -> bool {
+        for cell in self.falling_block.cells.iter() {
+            let col = self.falling_block.location.col + cell.col;
+            let row = self.falling_block.location.row + cell.row;
+            let location = Location { row, col };
+            if !self.check(&location) || !self.location_is_empty(&location) {
+                return false;
+            }
+        }
+        true
+    }
+
+    /// Check whether a row and column are in bounds.
+    fn check(&self, location: &Location) -> bool {
+        0 <= location.row
+            && location.row < self.rows as i8
+            && 0 <= location.col
+            && location.col < self.cols as i8
+    }
+
+    /// Check whether the location provided is empty on the board.
+    fn location_is_empty(&self, location: &Location) -> bool {
+        // TODO: define an enum (search `} tetris_cell;`).
+        self.board.get(location) == '0'
     }
 }
