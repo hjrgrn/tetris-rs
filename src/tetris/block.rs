@@ -2,6 +2,11 @@
 
 use crate::tetris::TETRIS;
 
+use rand::{
+    RngExt,
+    distr::{Distribution, StandardUniform},
+};
+
 /// A a struct that represents a
 /// [tetromino](https://en.wikipedia.org/wiki/Tetromino).
 ///
@@ -9,8 +14,10 @@ use crate::tetris::TETRIS;
 pub struct TetrisBlock {
     ty: BlockType,
     orientation: Orientation,
-    location: Location,
-    cells: [Location; TETRIS],
+    // TODO: make these private, maybe use amplify
+    // amplify = { version = "4", default-features = false, features = ["derive"] }
+    pub location: Location,
+    pub cells: [Location; TETRIS],
 }
 
 impl TetrisBlock {
@@ -268,7 +275,9 @@ impl Distribution<Orientation> for StandardUniform {
 
 /// A row,column pair, representing a location on the board. Negative numbers
 /// are allowed, since we need them for offsets.
-struct Location {
-    row: i8,
-    col: i8,
+pub struct Location {
+    // TODO: make these private, maybe use amplify
+    // amplify = { version = "4", default-features = false, features = ["derive"] }
+    pub row: i8,
+    pub col: i8,
 }

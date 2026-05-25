@@ -3,14 +3,10 @@
 use std::io::{self, Stdout, Write};
 
 use crossterm::{ExecutableCommand, terminal};
-use rand::{
-    RngExt,
-    distr::{Distribution, StandardUniform},
-};
 
 use crate::{tetris::block::TetrisBlock, ui::Container};
 
-mod block;
+pub mod block;
 
 static GRAVITY: u8 = 50;
 static TETRIS: usize = 4;
@@ -43,8 +39,8 @@ pub fn game() -> io::Result<()> {
 // TODO: separate ui and game fields in different structs, move those structs into different
 // modules.
 pub struct TetrisGame {
-    col: u16,
-    row: u16,
+    cols: u16,
+    rows: u16,
     board: Container,
     next: Container,
     hold: Container,
@@ -62,21 +58,21 @@ pub struct TetrisGame {
 }
 
 impl TetrisGame {
-    pub fn new(col: u16, row: u16) -> Self {
+    pub fn new(cols: u16, rows: u16) -> Self {
         Self {
-            col,
-            row,
-            board: Container::new(col, row, 0, 0),
-            next: Container::new(row / 4, col / 2, 0, col + 2),
-            hold: Container::new(row / 4, col / 2, (row / 4) + 2, col + 2),
+            cols,
+            rows,
+            board: Container::new(cols, rows, 0, 0),
+            next: Container::new(rows / 4, cols / 2, 0, cols + 2),
+            hold: Container::new(rows / 4, cols / 2, (rows / 4) + 2, cols + 2),
             stdout: io::stdout(),
             cleared_lines: 0,
             // TODO: different gravity levels
             ticks_till_ground: GRAVITY,
             // TODO: solve these `unwrap`s
-            falling_block: TetrisBlock::new(col.try_into().unwrap()),
-            next_block: TetrisBlock::new(col.try_into().unwrap()),
-            stored_block: TetrisBlock::new(col.try_into().unwrap()),
+            falling_block: TetrisBlock::new(cols.try_into().unwrap()),
+            next_block: TetrisBlock::new(cols.try_into().unwrap()),
+            stored_block: TetrisBlock::new(cols.try_into().unwrap()),
         }
     }
 
@@ -107,7 +103,7 @@ impl TetrisGame {
     fn gravity_tick(&mut self) {
         self.ticks_till_ground -= 1;
         if self.ticks_till_ground <= 0 {
-            // FROMHERE:: remove
+            self.remove_falling();
         }
     }
 
@@ -130,9 +126,8 @@ impl TetrisGame {
     }
 
     /// Clear a block out of the board.
-    fn remove(&mut self, block: TetrisBlock) {
-        for i in 0..TETRIS {
-            // TODOFIRST:
-        }
+    fn remove_falling(&mut self) {
+        // TODO: define an enum (search `} tetris_cell;`).
+        self.board.set(&self.falling_block, '0');
     }
 }
