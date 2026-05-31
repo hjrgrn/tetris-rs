@@ -11,6 +11,7 @@ use rand::{
 /// [tetromino](https://en.wikipedia.org/wiki/Tetromino).
 ///
 /// Specifically: its type, its orientation, and where it is.
+#[derive(Clone, Debug)]
 pub struct TetrisBlock {
     orientation: Orientation,
     // TODO: make these private, maybe use amplify
@@ -232,6 +233,7 @@ fn gen_cells(orientation: &Orientation, ty: &BlockType) -> [Location; TETRIS] {
 }
 
 /// The type/shape of a tetromino, not including orientation.
+#[derive(Debug, Clone)]
 pub enum BlockType {
     I,
     J,
@@ -280,6 +282,7 @@ impl Distribution<BlockType> for StandardUniform {
 }
 
 /// The orientation of a tetromino.
+#[derive(Debug, Clone)]
 enum Orientation {
     Zero,
     One,
@@ -300,6 +303,7 @@ impl Distribution<Orientation> for StandardUniform {
 
 /// A row,column pair, representing a location on the board. Negative numbers
 /// are allowed, since we need them for offsets.
+#[derive(Debug, Clone)]
 pub struct Location {
     // TODO: make these private, maybe use amplify
     // amplify = { version = "4", default-features = false, features = ["derive"] }

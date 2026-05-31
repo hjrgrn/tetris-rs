@@ -1,9 +1,6 @@
 //! TODO: merges the logic from ui and backend (they are independent)
 
-use std::{
-    any::Any,
-    io::{self, Stdout, Write},
-};
+use std::io::{self, Stdout, Write};
 
 use crossterm::{ExecutableCommand, terminal};
 
@@ -117,9 +114,9 @@ impl TetrisGame {
             } else {
                 self.falling_block.location.row -= 1;
                 self.put_falling();
-                // FROMHERE:
+                self.new_falling();
             }
-            // TODO:
+            // FROMHERE:
         }
     }
 
@@ -181,5 +178,13 @@ impl TetrisGame {
     fn location_is_empty(&self, location: &Location) -> bool {
         // TODO: define an enum (search `} tetris_cell;`).
         self.board.get(location) == '0'
+    }
+
+    /// Create a new falling block and populate the next falling block with a random
+    /// one.
+    fn new_falling(&mut self) {
+        // TODO: solve memcopy
+        self.falling_block = self.next_block.clone();
+        self.next_block = TetrisBlock::new(self.cols.try_into().unwrap());
     }
 }
