@@ -12,7 +12,6 @@ use rand::{
 ///
 /// Specifically: its type, its orientation, and where it is.
 pub struct TetrisBlock {
-    ty: BlockType,
     orientation: Orientation,
     // TODO: make these private, maybe use amplify
     // amplify = { version = "4", default-features = false, features = ["derive"] }
@@ -20,6 +19,7 @@ pub struct TetrisBlock {
     // of the Block, maybe we can have just cells, that describes the shape AND the location.
     pub location: Location,
     pub cells: [Location; TETRIS],
+    pub ty: BlockType,
 }
 
 impl TetrisBlock {
@@ -232,7 +232,7 @@ fn gen_cells(orientation: &Orientation, ty: &BlockType) -> [Location; TETRIS] {
 }
 
 /// The type/shape of a tetromino, not including orientation.
-enum BlockType {
+pub enum BlockType {
     I,
     J,
     L,
@@ -242,17 +242,40 @@ enum BlockType {
     Z,
 }
 
+impl TryFrom<u8> for BlockType {
+    type Error = anyhow::Error;
+    fn try_from(value: u8) -> Result<Self, Self::Error> {
+        match value {
+            0 => Ok(BlockType::I),
+            1 => Ok(BlockType::J),
+            2 => Ok(BlockType::L),
+            3 => Ok(BlockType::O),
+            4 => Ok(BlockType::S),
+            5 => Ok(BlockType::T),
+            6 => Ok(BlockType::Z),
+            _ => Err(anyhow::anyhow!("TODO")),
+        }
+    }
+}
+
+impl From<&BlockType> for u8 {
+    fn from(value: &BlockType) -> Self {
+        match value {
+            BlockType::I => 0,
+            BlockType::J => 1,
+            BlockType::L => 2,
+            BlockType::O => 3,
+            BlockType::S => 4,
+            BlockType::T => 5,
+            BlockType::Z => 6,
+        }
+    }
+}
+
 impl Distribution<BlockType> for StandardUniform {
     fn sample<R: rand::prelude::Rng + ?Sized>(&self, rng: &mut R) -> BlockType {
-        match rng.random_range(0..7) {
-            0 => BlockType::I,
-            1 => BlockType::O,
-            2 => BlockType::T,
-            3 => BlockType::L,
-            4 => BlockType::J,
-            5 => BlockType::S,
-            _ => BlockType::Z,
-        }
+        let i = rng.random_range(0..7);
+        BlockType::try_from(i).expect("This will never happen.")
     }
 }
 

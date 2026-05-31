@@ -456,6 +456,7 @@ dependencies = [
 name = "tetris-rs"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "crossterm",
  "rand",
 ]

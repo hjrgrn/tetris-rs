@@ -1,6 +1,9 @@
 //! TODO: merges the logic from ui and backend (they are independent)
 
-use std::io::{self, Stdout, Write};
+use std::{
+    any::Any,
+    io::{self, Stdout, Write},
+};
 
 use crossterm::{ExecutableCommand, terminal};
 
@@ -110,9 +113,11 @@ impl TetrisGame {
             // TODO: this may be a function/method.
             self.falling_block.location.row += 1;
             if self.falling_fits() {
-                // FROMHERE:
+                self.ticks_till_ground = GRAVITY;
             } else {
-                // TODO:
+                self.falling_block.location.row -= 1;
+                self.put_falling();
+                // FROMHERE:
             }
             // TODO:
         }
@@ -154,6 +159,14 @@ impl TetrisGame {
             }
         }
         true
+    }
+
+    /// Place a block onto the board.
+    fn put_falling(&mut self) {
+        self.board.set(
+            &self.falling_block,
+            (u8::from(&self.falling_block.ty) + 1) as char,
+        );
     }
 
     /// Check whether a row and column are in bounds.

@@ -11,5 +11,6 @@ name = "tetris-rs"
 path = "./src/main.rs"
 
 [dependencies]
+anyhow = "1.0.102"
 crossterm = "0.29.0"
 rand = "0.10.1"
