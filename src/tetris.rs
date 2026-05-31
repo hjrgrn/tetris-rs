@@ -102,7 +102,8 @@ impl TetrisGame {
         self.game_over()
     }
 
-    /// TODO:
+    /// Tick gravity, and move the block down if gravity should act.
+    // NOTE: this hasn't been tested yet.
     fn gravity_tick(&mut self) {
         self.ticks_till_ground -= 1;
         if self.ticks_till_ground <= 0 {
@@ -116,7 +117,7 @@ impl TetrisGame {
                 self.put_falling();
                 self.new_falling();
             }
-            // FROMHERE:
+            self.put_falling();
         }
     }
 
