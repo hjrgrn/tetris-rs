@@ -200,8 +200,33 @@ impl TetrisGame {
     /// Rotate the falling block in either direction (+/-1).
     fn rotate_falling(&mut self, direction: i8) {
         self.remove_falling();
-        self.falling_block.orientation = self.falling_block.orientation.rotate(direction);
-        // TODOFIRST:
+        loop {
+            self.falling_block.orientation = self.falling_block.orientation.rotate(direction);
+            // If the new orientation fits, we're done.
+            if self.falling_fits() {
+                break;
+            }
+
+            // Otherwise, try moving left to make it fit.
+            self.falling_block.location.col -= 1;
+            if self.falling_fits() {
+                break;
+            }
+
+            // Finally, try moving right to make it fit.
+            self.falling_block.location.col += 2;
+            if self.falling_fits() {
+                break;
+            }
+
+            // Put it back in its original location and try the next orientation.
+            self.falling_block.location.col -= 1;
+            // Worst case, we come back to the original orientation and it fits, so this
+            // loop will terminate.
+            // TODO: needs testing
+        }
+
+        self.put_falling();
     }
 
     /// Check whether a row and column are in bounds.
