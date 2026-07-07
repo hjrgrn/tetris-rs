@@ -124,22 +124,12 @@ impl TetrisGame {
     /// TODO:
     fn handle_move(&mut self, mv: &Move) {
         match mv {
-            &Move::Left => {
-                // FROMHERE:
-                self.move_block(-1)
-            }
+            &Move::Left => self.move_falling(-1),
+            &Move::Right => self.move_falling(1),
+            // FROMHERE:
+            &Move::Drop => self.falling_down(),
             _ => {}
         }
-    }
-
-    /// Move the falling tetris block left (-1) or right (+1).
-    fn move_block(&mut self, direction: i8) {
-        self.remove_falling();
-        self.falling_block.location.col += direction;
-        if !self.falling_fits() {
-            self.falling_block.location.col -= direction;
-        }
-        self.put_falling();
     }
 
     /// TODO:
@@ -183,6 +173,27 @@ impl TetrisGame {
             &self.falling_block,
             (u8::from(&self.falling_block.ty) + 1) as char,
         );
+    }
+
+    /// Move the falling tetris block left (-1) or right (+1).
+    fn move_falling(&mut self, direction: i8) {
+        self.remove_falling();
+        self.falling_block.location.col += direction;
+        if !self.falling_fits() {
+            self.falling_block.location.col -= direction;
+        }
+        self.put_falling();
+    }
+
+    /// Send the falling tetris block to the bottom.
+    fn falling_down(&mut self) {
+        self.remove_falling();
+        while self.falling_fits() {
+            self.falling_block.location.row += 1;
+        }
+        self.falling_block.location.row -= 1;
+        self.put_falling();
+        self.new_falling();
     }
 
     /// Check whether a row and column are in bounds.
