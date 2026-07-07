@@ -90,9 +90,9 @@ impl TetrisGame {
 
     pub fn tick(&mut self, mv: &Move) -> bool {
         // Handle gravity.
-        // FROMHERE:
         self.gravity_tick();
         // Handle input.
+        // FROMHERE:
         self.handle_move(mv);
         // Check for cleared lines.
         self.check_cleared_lines();
@@ -122,7 +122,25 @@ impl TetrisGame {
     }
 
     /// TODO:
-    fn handle_move(&self, _mv: &Move) {}
+    fn handle_move(&mut self, mv: &Move) {
+        match mv {
+            &Move::Left => {
+                // FROMHERE:
+                self.move_block(-1)
+            }
+            _ => {}
+        }
+    }
+
+    /// Move the falling tetris block left (-1) or right (+1).
+    fn move_block(&mut self, direction: i8) {
+        self.remove_falling();
+        self.falling_block.location.col += direction;
+        if !self.falling_fits() {
+            self.falling_block.location.col -= direction;
+        }
+        self.put_falling();
+    }
 
     /// TODO:
     fn check_cleared_lines(&mut self) {
