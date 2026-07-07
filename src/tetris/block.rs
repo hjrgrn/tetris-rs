@@ -13,7 +13,7 @@ use rand::{
 /// Specifically: its type, its orientation, and where it is.
 #[derive(Clone, Debug)]
 pub struct TetrisBlock {
-    orientation: Orientation,
+    pub orientation: Orientation,
     // TODO: make these private, maybe use amplify
     // amplify = { version = "4", default-features = false, features = ["derive"] }
     // IDEA: Now we have Location, that describes the location, and cells, that describe the shape
@@ -282,12 +282,49 @@ impl Distribution<BlockType> for StandardUniform {
 }
 
 /// The orientation of a tetromino.
-#[derive(Debug, Clone)]
-enum Orientation {
+#[derive(Debug, Clone, Copy)]
+pub enum Orientation {
     Zero,
     One,
     Two,
     Three,
+}
+
+impl Orientation {
+    /// Rotates the orientation by a specific amount.
+    ///
+    /// This method consume the instance of rotation and gives back a new,
+    /// rotated instance.
+    pub fn rotate(self, direction: i8) -> Self {
+        let i: i8 = self.into();
+        // TODO: Needs testing
+        Orientation::try_from((i + direction).rem_euclid(4)).expect("TODO:")
+    }
+}
+
+impl TryFrom<i8> for Orientation {
+    type Error = anyhow::Error;
+    fn try_from(value: i8) -> Result<Self, Self::Error> {
+        match value {
+            0 => Ok(Orientation::Zero),
+            1 => Ok(Orientation::One),
+            2 => Ok(Orientation::Two),
+            3 => Ok(Orientation::Three),
+            // TODO:
+            _ => Err(anyhow::anyhow!("TODO:")),
+        }
+    }
+}
+
+impl From<Orientation> for i8 {
+    fn from(value: Orientation) -> Self {
+        match value {
+            Orientation::Zero => 0,
+            Orientation::One => 1,
+            Orientation::Two => 2,
+            Orientation::Three => 3,
+        }
+    }
 }
 
 impl Distribution<Orientation> for StandardUniform {

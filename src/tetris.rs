@@ -126,8 +126,9 @@ impl TetrisGame {
         match mv {
             &Move::Left => self.move_falling(-1),
             &Move::Right => self.move_falling(1),
-            // FROMHERE:
             &Move::Drop => self.falling_down(),
+            // FROMHERE:
+            &Move::Clock => self.rotate_falling(1),
             _ => {}
         }
     }
@@ -194,6 +195,13 @@ impl TetrisGame {
         self.falling_block.location.row -= 1;
         self.put_falling();
         self.new_falling();
+    }
+
+    /// Rotate the falling block in either direction (+/-1).
+    fn rotate_falling(&mut self, direction: i8) {
+        self.remove_falling();
+        self.falling_block.orientation = self.falling_block.orientation.rotate(direction);
+        // TODOFIRST:
     }
 
     /// Check whether a row and column are in bounds.
